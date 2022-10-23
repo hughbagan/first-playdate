@@ -8,14 +8,14 @@ import "CoreLibs/timer"
 local playerSpr = nil
 
 function setup()
-	local playerImg = gfx.image.new('images/player')
+	local playerImg = gfx.image.new(70, 16, gfx.kColorBlack)
 	assert(playerImg) -- file not found?
 	playerSpr = gfx.sprite.new(playerImg)
 	-- Use : for calling instance methods (operator passes in 'self')
-	playerSpr:moveTo(200,120) -- center of screen
+	playerSpr:moveTo(200,220) -- center of screen 200, 120
 	playerSpr:add()
 
-	local backgroundImg = gfx.image.new('images/background')
+	local backgroundImg = gfx.image.new("images/bg")
 	assert(backgroundImg)
 	gfx.sprite.setBackgroundDrawingCallback(
 		function(x, y, width, height)
