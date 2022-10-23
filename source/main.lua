@@ -30,18 +30,17 @@ setup()
 
 function playdate.update()
 	-- 30 times / second
-	if playdate.buttonIsPressed(playdate.kButtonUp) then
-	   playerSpr:moveBy(0, -2)
+	local playerSpd = 10
+	if playdate.buttonIsPressed(playdate.kButtonRight)
+	and playerSpr.x < 400 then
+	   playerSpr:moveBy(playerSpd, 0)
 	end
-	if playdate.buttonIsPressed(playdate.kButtonRight) then
-	   playerSpr:moveBy(2, 0)
+	if playdate.buttonIsPressed(playdate.kButtonLeft)
+	and playerSpr.x > 0 then
+	   playerSpr:moveBy(-playerSpd, 0)
 	end
-	if playdate.buttonIsPressed(playdate.kButtonDown) then
-	   playerSpr:moveBy(0, 2)
-	end
-	if playdate.buttonIsPressed(playdate.kButtonLeft) then
-	   playerSpr:moveBy(-2, 0)
-	end
+	if playerSpr.x < 0 then playerSpr:moveTo(0, playerSpr.y) end
+	if playerSpr.x > 400 then playerSpr:moveTo(400, playerSpr.y) end
 
 	-- draw sprites, update timers
 	playdate.timer.updateTimers()
