@@ -5,16 +5,11 @@ local gfx <const> = playdate.graphics
 import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
-local playerSpr = nil
+import "paddle"
 
-function setup()
-	local playerImg = gfx.image.new(70, 16, gfx.kColorBlack)
-	assert(playerImg) -- file not found?
-	playerSpr = gfx.sprite.new(playerImg)
-	-- Use : for calling instance methods (operator passes in 'self')
-	playerSpr:moveTo(200,220) -- center of screen 200, 120
-	playerSpr:add()
+local paddle = Paddle()
 
+function setup()	
 	local backgroundImg = gfx.image.new("images/bg")
 	assert(backgroundImg)
 	gfx.sprite.setBackgroundDrawingCallback(
@@ -29,18 +24,14 @@ end
 setup()
 
 function playdate.update()
-	-- 30 times / second
-	local playerSpd = 10
-	if playdate.buttonIsPressed(playdate.kButtonRight)
-	and playerSpr.x < 400 then
-	   playerSpr:moveBy(playerSpd, 0)
+	-- 30 times per second (?)
+
+	if playdate.buttonIsPressed(playdate.kButtonLeft) then
+		paddle:left()
 	end
-	if playdate.buttonIsPressed(playdate.kButtonLeft)
-	and playerSpr.x > 0 then
-	   playerSpr:moveBy(-playerSpd, 0)
+	if playdate.buttonIsPressed(playdate.kButtonRight) then
+		paddle:right()
 	end
-	if playerSpr.x < 0 then playerSpr:moveTo(0, playerSpr.y) end
-	if playerSpr.x > 400 then playerSpr:moveTo(400, playerSpr.y) end
 
 	-- draw sprites, update timers
 	playdate.timer.updateTimers()
