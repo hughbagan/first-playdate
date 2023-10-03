@@ -1,20 +1,22 @@
-
-import "CoreLibs/object"
 import "CoreLibs/graphics"
-local gfx <const> = playdate.graphics
 import "CoreLibs/sprites"
 import "CoreLibs/timer"
+import "CoreLibs/object"
+gfx = playdate.graphics
+tmr = playdate.timer
 
-local playerSpr = nil
+WIDTH = playdate.display.getWidth() -- center of screen 200, 120
+HEIGHT = playdate.display.getHeight()
+
+import "Paddle"
+import "Ball"
+
+State = {START=1, PLAY=2}
+state = State.START
+local paddle = nil
+local ball = nil
 
 function setup()
-	local playerImg = gfx.image.new(70, 16, gfx.kColorBlack)
-	assert(playerImg) -- file not found?
-	playerSpr = gfx.sprite.new(playerImg)
-	-- Use : for calling instance methods (operator passes in 'self')
-	playerSpr:moveTo(200,220) -- center of screen 200, 120
-	playerSpr:add()
-
 	local backgroundImg = gfx.image.new("images/bg")
 	assert(backgroundImg)
 	gfx.sprite.setBackgroundDrawingCallback(
@@ -24,25 +26,23 @@ function setup()
 			backgroundImg:draw(0, 0)
 		end
 	)
+	paddle = Paddle()
+	ball = Ball()
 end
 
-setup()
-
-function playdate.update()
-	-- 30 times / second
-	local playerSpd = 10
-	if playdate.buttonIsPressed(playdate.kButtonRight)
-	and playerSpr.x < 400 then
-	   playerSpr:moveBy(playerSpd, 0)
+function playdate.update() -- 30 times / second
+	if state == State.START then
+		gfx.drawText('Press A', WIDTH*0.5, HEIGHT*0.5)
+		if playdate.buttonIsPressed(playdate.kButtonA) then
+			setup()
+			state = State.PLAY
+		end
+	elseif state == State.PLAY then
+		-- draw sprites, update timers
+		tmr.updateTimers()
+		gfx.sprite.update()
+	else
+		assert(false, "state "..state.." not recognized")
 	end
-	if playdate.buttonIsPressed(playdate.kButtonLeft)
-	and playerSpr.x > 0 then
-	   playerSpr:moveBy(-playerSpd, 0)
-	end
-	if playerSpr.x < 0 then playerSpr:moveTo(0, playerSpr.y) end
-	if playerSpr.x > 400 then playerSpr:moveTo(400, playerSpr.y) end
-
-	-- draw sprites, update timers
-	playdate.timer.updateTimers()
-	gfx.sprite.update()
 end
+
